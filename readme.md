@@ -5,6 +5,11 @@ appf -- apply filters and overwrite files
 ----
 
 コマンドラインにフィルタとファイル名を与える。ファイルにフィルタを適用し上書きする。
+こんな感じのことをやる;
+
+```
+$ cat <filename> | <filters> > <filename>
+```
 
 
 起動式
