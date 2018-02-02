@@ -11,6 +11,7 @@ class TestFile
     @testfile = nil
     setup_testfile
   end
+  attr_reader :filter
 
   def setup_testfile
     unlink
@@ -49,7 +50,7 @@ class TestTestfile < MiniTest::Test
   end
 
   def setup
-    @tf = TestFile.new('head -n1|tr a A', File.join(rootdir, 'testdata.txt'))
+    @tf = TestFile.new('head -n1|tr a A', File.join(rootdir, 'test_testdata.txt'))
   end
 
   def test_exist
@@ -67,5 +68,36 @@ class TestTestfile < MiniTest::Test
     text = IO.readlines(@tf.expect_filename)
     assert_equal 1, text.size
     assert_equal 'Abc', text[0].strip
+  end
+end
+
+class TestAppf < MiniTest::Test
+  def initialize(name)
+    super
+    @tests = []
+    test_data.each do |t|
+      t[:files].each do |f|
+        @tests << TestFile.new(t[:filter], f)
+      end
+    end
+
+    appf_path = File.expand_path(File.dirname($0) + '/../appf.rb')
+    @appf = "bundle exec #{appf_path}"
+  end
+
+  private
+  def test_data
+    dir = File.expand_path(File.dirname($0))
+    [{filter: "grep abc | tr abc ABC", files: ["#{dir}/testdata.txt"]}]
+  end
+
+  public
+  def test_it
+    @tests.each do |t|
+      system("#{@appf} '#{t.filter}' #{t.test_filename}")
+      assert_exists t.test_filename
+      assert_equal IO.read(t.expect_filename), IO.read(t.test_filename)
+      t.unlink
+    end
   end
 end
