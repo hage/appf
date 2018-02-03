@@ -91,13 +91,25 @@ class TestAppf < MiniTest::Test
     [{filter: "grep abc | tr abc ABC", files: ["#{dir}/testdata.txt"]}]
   end
 
-  public
-  def test_it
+  def common_test
     @tests.each do |t|
-      system("#{@appf} '#{t.filter}' #{t.test_filename}")
+      system(yield t)
       assert_exists t.test_filename
       assert_equal IO.read(t.expect_filename), IO.read(t.test_filename)
       t.unlink
+    end
+  end
+
+  public
+  def test_commandline
+    common_test do |t|
+      "#{@appf} '#{t.filter}' #{t.test_filename}"
+    end
+  end
+
+  def test_pipe
+    common_test do |t|
+      "cat #{t.test_filename} | #{@appf} '#{t.filter}'"
     end
   end
 end
