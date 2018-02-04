@@ -95,7 +95,9 @@ class TestAppf < MiniTest::Test
     @tests.each do |t|
       system(yield t)
       assert_exists t.test_filename
-      assert_equal IO.read(t.expect_filename), IO.read(t.test_filename)
+      ex = IO.read(t.expect_filename)
+      ac = IO.read(t.test_filename)
+      assert_equal ex, ac
       t.unlink
     end
   end
