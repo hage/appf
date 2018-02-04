@@ -109,9 +109,9 @@ class TestAppf < MiniTest::Test
     end
   end
 
-  # def test_pipe
-  #   common_test do |t|
-  #     "cat #{t.test_filename} | #{@appf} '#{t.filter}'"
-  #   end
-  # end
+  def test_pipe
+    common_test do |t|
+      "echo #{t.test_filename} | #{@appf} '#{t.filter}'"
+    end
+  end
 end
