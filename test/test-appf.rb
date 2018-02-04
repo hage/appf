@@ -82,7 +82,7 @@ class TestAppf < MiniTest::Test
     end
 
     appf_path = File.expand_path(File.dirname($0) + '/../appf.rb')
-    @appf = "bundle exec #{appf_path}"
+    @appf = "bundle exec ruby #{appf_path}"
   end
 
   private
