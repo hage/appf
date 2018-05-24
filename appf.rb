@@ -3,11 +3,12 @@
 def apply_one_file(filter, filename)
   begin
     result = `cat #{filename} | #{filter}`
+    raise if $? != 0
     open(filename, 'w') do |f|
       f.print(result)
     end
   rescue => err
-    STDERR.puts "#{filename}: #{err.full_message}"
+    STDERR.puts "#{filename}: #{err.to_s}"
   end
 end
 
