@@ -34,7 +34,7 @@ end
 def main(argv)
   filter = argv.shift
   file_list = argv.empty? ? STDIN.to_a.map{|x| x.strip} : argv
-  q = Thread::Queue.new
+  q = Queue.new
   th = (1..nworker).map{Thread.start {apply_loop(filter, q)}}
   enqueue(file_list, q)
   th.each_with_index do |t, i|
